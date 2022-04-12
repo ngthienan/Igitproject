@@ -8,7 +8,7 @@
     android:padding="20dp">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_weather"
+        android:id="@+id/rcv_searchWeather"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
@@ -36,25 +36,10 @@
         android:backgroundTint="#B9C1B3"
         android:clickable="true"
         android:focusable="true"
-        android:text="Get Weather"
+        android:text="Get Weather In DB"
         android:textColor="#654C4C"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtNameCity" />
-
-    <Button
-        android:id="@+id/btnSearchId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#B9C1B3"
-        android:clickable="true"
-        android:focusable="true"
-        android:text="Search"
-        android:textColor="#9E5E5E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.984"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtNameCity" />
 

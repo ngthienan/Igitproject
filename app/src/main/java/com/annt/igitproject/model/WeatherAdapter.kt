@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.annt.igitproject.R
 
-class WeatherAdapter(var list : ArrayList<WeatherDateModel> ) : ListAdapter<WeatherDateModel, NoteOldViewHolder>(WeatherDiffCallBack()) {
+class WeatherAdapter(var list : ArrayList<WeatherDataModel> ) : ListAdapter<WeatherDataModel, NoteOldViewHolder>(WeatherDiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteOldViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return NoteOldViewHolder(inflater.inflate(R.layout.item_weather, parent, false))
@@ -29,7 +29,7 @@ class NoteOldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvDescription: TextView = itemView.findViewById(R.id.tvDesrciption)
 
 
-    fun bindData(weatherDateModel: WeatherDateModel) {
+    fun bindData(weatherDateModel: WeatherDataModel) {
         tvDate.text = weatherDateModel.dt.toString()
         tvAveTemp.text = weatherDateModel.eve.toString()
         tvPressure.text = weatherDateModel.pressure.toString()
@@ -39,13 +39,13 @@ class NoteOldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 }
 
 
-class WeatherDiffCallBack : DiffUtil.ItemCallback<WeatherDateModel>() {
+class WeatherDiffCallBack : DiffUtil.ItemCallback<WeatherDataModel>() {
 
-    override fun areItemsTheSame(oldItem: WeatherDateModel, newItem: WeatherDateModel): Boolean {
+    override fun areItemsTheSame(oldItem: WeatherDataModel, newItem: WeatherDataModel): Boolean {
         return oldItem.dt == newItem.dt
     }
 
-    override fun areContentsTheSame(oldItem: WeatherDateModel, newItem: WeatherDateModel): Boolean {
+    override fun areContentsTheSame(oldItem: WeatherDataModel, newItem: WeatherDataModel): Boolean {
         return oldItem == newItem
     }
 

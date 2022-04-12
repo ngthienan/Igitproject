@@ -1,6 +1,7 @@
 package com.annt.igitproject
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
@@ -13,32 +14,38 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.annt.igitproject.db.WeatherData
 import com.annt.igitproject.model.WeatherAdapter
-import com.annt.igitproject.model.WeatherDateModel
-import com.google.samples.apps.sunflower.api.WeatherService
+import com.annt.igitproject.model.WeatherDataModel
+import com.annt.igitproject.api.WeatherService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var weatherService: WeatherService
     var adapter : WeatherAdapter? = null
-    var weatherLst : ArrayList<WeatherDateModel> = ArrayList()
+    var weatherLst : ArrayList<WeatherDataModel> = ArrayList()
+    var weatherLstForDb : ArrayList<WeatherData> = ArrayList()
     lateinit var editText : EditText
     lateinit var rcvWeather: RecyclerView
     lateinit var btnSearch: Button
+    lateinit var btnSearchId : Button
     @SuppressLint("NewApi", "SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         editText = findViewById(R.id.edtNameCity)
         rcvWeather = findViewById(R.id.rcv_weather)
         btnSearch = findViewById(R.id.btnGetWeather)
+        btnSearchId = findViewById(R.id.btnSearchId)
+        btnSearchId.setOnClickListener(this)
         btnSearch.setOnClickListener(this)
-       /* btnSearch.setOnClickListener {
+        //Way 2 to handle Click button Event
+       /* btnSearchId.setOnClickListener {
             var textSearch = editText.text
             searchWeather(textSearch.toString())
         }
@@ -51,7 +58,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 rcvWeather.context,
                 DividerItemDecoration.VERTICAL
             )
-
         )
 
         weatherService = WeatherService.create()
@@ -65,6 +71,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.btnGetWeather -> {
                var textSearch = editText.text
                 searchWeather(textSearch.toString())
+            }
+            R.id.btnSearchId -> {
+                val intent = Intent(this, SearchDbActivity::class.java)
+                startActivity(intent)
             }
         }
 
@@ -87,7 +97,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val timeD = item.dt?.times(1000)?.let { Date(it) }
                 val sdf = SimpleDateFormat("EEEE, dd/MMM/yyyy", Locale("en"))
                 val dateFormatted = sdf.format(timeD)
-                var weatherDateModel = WeatherDateModel(
+                var weatherDateModel = WeatherDataModel(
                     "Date : $dateFormatted",
                     "Average temperature : ${item.temp?.eve}",
                     "Pressure : ${item.pressure}",
@@ -98,8 +108,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         )?.description
                     }"
                 )
+                var weatherData = WeatherData(
+                    "Date : $dateFormatted",
+                    "Average temperature : ${item.temp?.eve}",
+                    "Pressure : ${item.pressure}",
+                    "Humidity : ${item.humidity}",
+                    "Description :${
+                        item.weather?.get(
+                            0
+                        )?.description
+                    }")
+                weatherLstForDb.add(weatherData)
                 weatherLst.add(weatherDateModel)
             }
+            MyApplication.instance.database.productDao().deleteAll()
+            MyApplication.instance.database.productDao().insertAll(weatherLstForDb)
+            weatherLstForDb.clear()
             withContext(Dispatchers.Main){
                 Log.d("MainActivity", "Update RCV: ${weatherLst.size}")
                 //adapter!!.notifyDataSetChanged()

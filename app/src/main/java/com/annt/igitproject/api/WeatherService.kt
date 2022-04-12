@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.sunflower.api
+package com.annt.igitproject.api
 
 import com.annt.igitproject.model.WeatherResponse
 import okhttp3.OkHttpClient
